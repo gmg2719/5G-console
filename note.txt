@@ -1,1 +1,3 @@
 20200306
+1、修改界面，grid.addWidget(contentEdit,3,1,4,1)
+把contentEdit放在gird布局的第3行第1列，跨越5行和1列

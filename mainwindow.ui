@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>701</width>
+    <height>492</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab1">
+       <attribute name="title">
+        <string>新建连接</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6_tab1">
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_4_tab1">
+          <property name="title">
+           <string>操作日志</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4_tab1">
+           <item row="0" column="0">
+            <widget class="QPlainTextEdit" name="plainTextEdit_4_tab1"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QGroupBox" name="groupBox_5_tab1">
+          <property name="title">
+           <string>心跳</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5_tab1">
+           <item row="0" column="0">
+            <widget class="QPlainTextEdit" name="plainTextEdit_5_tab1"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QGroupBox" name="groupBox_3_tab1">
+          <property name="title">
+           <string>查询信息</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3_tab1">
+           <item row="0" column="0">
+            <widget class="QPlainTextEdit" name="plainTextEdit_3_tab1"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>701</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menulink_settings">
+    <property name="title">
+     <string>连接设置</string>
+    </property>
+    <addaction name="actionlink"/>
+    <addaction name="actionnew_tab"/>
+    <addaction name="actionIMSI"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>板卡设置</string>
+    </property>
+    <addaction name="actionchongqi"/>
+   </widget>
+   <widget class="QMenu" name="cellcfgs">
+    <property name="title">
+     <string>小区参数配置</string>
+    </property>
+    <addaction name="cellcfgf003"/>
+    <addaction name="workmodef006"/>
+   </widget>
+   <widget class="QMenu" name="commenquery">
+    <property name="title">
+     <string>常用查询</string>
+    </property>
+    <addaction name="cellcfgquery"/>
+    <addaction name="cellstatequery"/>
+    <addaction name="pwrquery"/>
+    <addaction name="workmodequery"/>
+   </widget>
+   <addaction name="menulink_settings"/>
+   <addaction name="menu"/>
+   <addaction name="cellcfgs"/>
+   <addaction name="commenquery"/>
+  </widget>
+  <action name="actionlink">
+   <property name="text">
+    <string>连接</string>
+   </property>
+  </action>
+  <action name="actionnew_tab">
+   <property name="text">
+    <string>新建连接</string>
+   </property>
+  </action>
+  <action name="actionchongqi">
+   <property name="text">
+    <string>重启板卡</string>
+   </property>
+  </action>
+  <action name="actionIMSI">
+   <property name="text">
+    <string>IMSI 列表</string>
+   </property>
+  </action>
+  <action name="cellcfgf003">
+   <property name="text">
+    <string>小区参数配置F003</string>
+   </property>
+  </action>
+  <action name="cellcfgquery">
+   <property name="text">
+    <string>小区参数查询F27</string>
+   </property>
+  </action>
+  <action name="cellstatequery">
+   <property name="text">
+    <string>小区状态查询F02F</string>
+   </property>
+  </action>
+  <action name="pwrquery">
+   <property name="text">
+    <string>衰减及增益查询F031</string>
+   </property>
+  </action>
+  <action name="workmodef006">
+   <property name="text">
+    <string>工作模式配置F006</string>
+   </property>
+  </action>
+  <action name="workmodequery">
+   <property name="text">
+    <string>工作模式查询F03D</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
