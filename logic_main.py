@@ -525,46 +525,72 @@ def analyze(data, ip):
     msglength = data[14]+data[15]+data[12]+data[13]
     msglength = int(msglength,16)
     msgtype=data[10]+data[11]+data[8]+data[9]
-    if main_flag == '主控模式':
-        msgvalue=data[24:msglength*2]
-    elif main_flag == '非主控模式':
-        msgvalue=data[64:msglength*2]
+    msgvalue=data[64:msglength*2]
     localtime =time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    if msgtype == 'f010':
-        cellstate=getU16int(msgvalue)
-        pos=4
-        msgvalue=msgvalue[pos:]
-        band=getU16int(msgvalue)
-        pos=4
-        msgvalue=msgvalue[pos:]
-        ul_earfcn=getU32int(msgvalue)
+    if msgtype == '0001':
+        gnbId=getU32int(msgvalue)
         pos=8
         msgvalue=msgvalue[pos:]
-        dl_earfcn=getU32int(msgvalue)
-        pos=8
-        msgvalue=msgvalue[pos:]
-        plmn=msgvalue[0:10]
-        plmn=strhexASCtostr(plmn)
-        pos=14
-        msgvalue=msgvalue[pos:]
-        bandwith=getU8int(msgvalue)
+        cuInfoPres=getU8int(msgvalue)
         pos=2
         msgvalue=msgvalue[pos:]
-        pci=getU16int(msgvalue)
-        pos=4
-        msgvalue=msgvalue[pos:]
-        tac=getU16int(msgvalue)
-#        pos=4
-#        msgvalue=msgvalue[pos:]
-#        syncmode=getU16int(msgvalue)
-#        pos=4
-#        msgvalue=msgvalue[pos:]
-#        syncstate=getU16int(msgvalue)
-        showmsg='Receive '+localtime+' HeartBeat'+' 小区状态：'+str(cellstate) \
-        +' 小区BAND：'+str(band)+' 上行频点：'+str(ul_earfcn)+' 下行频点:'+str(dl_earfcn)+' plmn:'+plmn \
-        +' 小区带宽:'+str(bandwith)+' pci:'+str(pci)+' tac:'+str(tac) \
-        #+'同步方式:'+str(syncmode)+'同步状态:'+str(syncstate)
+        duInfoListPres=getU8int(msgvalue)
+        pos=6
+        showmsg='Receive '+localtime+' HeartBeat'+' GnbId：'+str(gnbId)
         win.signal_write_msg.emit(showmsg, board_ip)
+        
+        if cuInfoPres == 1:
+            msgvalue=msgvalue[pos:]
+            cuStatus=getU8int(msgvalue)
+            pos=8
+            showmsg='CuStatus：'+str(cuStatus)
+            win.signal_write_msg.emit(showmsg, board_ip)
+        
+        if duInfoListPres == 1:
+            msgvalue=msgvalue[pos:]
+            duNum=getU8int(msgvalue)
+            pos=8
+            showmsg='DuNum：'+str(duNum)
+            win.signal_write_msg.emit(showmsg, board_ip)
+            duNum_i = 1
+            print(duNum_i)
+            while duNum_i <=duNum:
+                showmsg=' No. '+str(duNum_i)+' DU: '
+                win.signal_write_msg.emit(showmsg, board_ip)
+                msgvalue = msgvalue[pos:]
+                duSn = msgvalue[0:40]
+                duSn = strhexASCtostr(duSn) 
+                pos = 40
+                msgvalue=msgvalue[pos:]
+                duStatus=getU8int(msgvalue)
+                pos=6
+                showmsg='  DuSn：'+str(duSn)+' DuStatus: '+str(duStatus)
+                win.signal_write_msg.emit(showmsg, board_ip)
+                msgvalue=msgvalue[pos:]
+                cellNum=getU8int(msgvalue)
+                pos=2
+                showmsg=' CellNum：'+str(cellNum)
+                win.signal_write_msg.emit(showmsg, board_ip)
+                cellNum_i =1
+                while cellNum_i<= cellNum:
+                    showmsg='  No. '+str(cellNum_i)+' Cell: '
+                    win.signal_write_msg.emit(showmsg, board_ip)
+                    msgvalue=msgvalue[pos:]
+                    cellId=getU16int(msgvalue)
+                    pos=4
+                    msgvalue=msgvalue[pos:]
+                    cellStatusind=getU8int(msgvalue)
+                    pos=2
+                    cellstatuslist=['小区IDLE态', '小区建立中', '小区已激活', '小区重配中', '小区去激活中']
+                    cellstatus =cellstatuslist[cellStatusind]
+                    msgvalue=msgvalue[pos:]
+                    cellIdx=getU8int(msgvalue)
+                    pos=2
+                    showmsg='  cellId：'+str(cellId)+' 小区状态: '+str(cellstatus)+' cellIdx '+str(cellIdx)
+                    win.signal_write_msg.emit(showmsg, board_ip)
+                    cellNum_i +=1
+                duNum_i  +=1
+                
     elif msgtype == 'f005':
         UeIdType=getU32int(msgvalue)
         pos=8
