@@ -3,7 +3,7 @@ if hasattr(sys, 'frozen'):
     os.environ['PATH'] = sys._MEIPASS + ";" + os.environ['PATH']
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication , QMainWindow ,  QDialog
+from PyQt5.QtWidgets import QApplication , QMainWindow ,  QDialog , QWidget
 from Ui_dialog_link import Ui_Dialog
 from Ui_reboot import Ui_Dialog_reboot
 from Ui_mainwindow import Ui_MainWindow
@@ -11,6 +11,7 @@ from Ui_IMSI_TreeView import ImsiList
 from Ui_dialog_cellcfg import Ui_Dialog_cellcfg
 from Ui_dialog_workmode import Ui_Dialog_workmode
 from Ui_dialog_cellnum import Ui_Dialog_cellnum
+from Ui_emptyerr import Ui_emptyerr
 
 import sys
 import threading
@@ -275,7 +276,7 @@ def cellnumClicked():
     item.setText(_translate("Dialog", "注释"))
         
     rowcount_i =0
-    ColumnCount_i=0
+    #ColumnCount_i=0
 
     while rowcount_i<rowcount:
         item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
@@ -568,77 +569,82 @@ def cellcfgClicked():
     dunum = tabindex_dunum[win._mainui.tabWidget.currentIndex()]
     cell1num =tabindex_cell1num[win._mainui.tabWidget.currentIndex()]
     cell2num =tabindex_cell2num[win._mainui.tabWidget.currentIndex()]
-    boardport = tabindex_boardport[win._mainui.tabWidget.currentIndex()]
-    boardip = tabindex_boardip[win._mainui.tabWidget.currentIndex()]
-    client_socket = tabindex_socket[win._mainui.tabWidget.currentIndex()]
-    cellcfginfo = ''
-    rowcount = int(dunum)
-    rowcount_i = 0
-    while rowcount_i < rowcount:
-        gnbid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-        gnbid = decstrtohexstr(gnbid, 'u32')
-        cellcfginfo += gnbid
-        rowcount_i += 1
-        dunumcfg = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-        dunumcfg = decstrtohexstr(dunumcfg, 'u8')
-        cellcfginfo += dunumcfg+'000000'
-        rowcount_i += 1
-        dunum_i = 1
-        while dunum_i <= int(dunum):
-            dusn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-            dusn = strtohexasc(dusn) + '00000000'
-            cellcfginfo += dusn
+    rowcount = 2 + 2 * int(dunum) + 9 * int(cell1num) + 9 * int(cell2num)
+    result = emptyerr(rowcount,cellcfgdialog._cellcfgui)
+    if result == 'empty':
+        return
+    elif result == 'noempty':
+        boardport = tabindex_boardport[win._mainui.tabWidget.currentIndex()]
+        boardip = tabindex_boardip[win._mainui.tabWidget.currentIndex()]
+        client_socket = tabindex_socket[win._mainui.tabWidget.currentIndex()]
+        cellcfginfo = ''
+        rowcount = int(dunum)
+        rowcount_i = 0
+        while rowcount_i < rowcount:
+            gnbid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+            gnbid = decstrtohexstr(gnbid, 'u32')
+            cellcfginfo += gnbid
             rowcount_i += 1
-            cellnum = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-            cellnumint = int(cellnum)
-            cellnum = decstrtohexstr(cellnum, 'u8')
-            cellcfginfo += cellnum
+            dunumcfg = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+            dunumcfg = decstrtohexstr(dunumcfg, 'u8')
+            cellcfginfo += dunumcfg+'000000'
             rowcount_i += 1
-            cellnum_i = 1
-            while cellnum_i <= cellnumint:
-                cellidx = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                cellidx = decstrtohexstr(cellidx, 'u8')
-                cellcfginfo += cellidx
+            dunum_i = 1
+            while dunum_i <= int(dunum):
+                dusn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                dusn = strtohexasc(dusn) + '00000000'
+                cellcfginfo += dusn
                 rowcount_i += 1
-                plmn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                plmn = strtohexasc(plmn) + '0000'
-                cellcfginfo += plmn
+                cellnum = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                cellnumint = int(cellnum)
+                cellnum = decstrtohexstr(cellnum, 'u8')
+                cellcfginfo += cellnum
                 rowcount_i += 1
-                pci = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                pci = decstrtohexstr(pci, 'u16')
-                cellcfginfo += pci
-                rowcount_i += 1
-                cellid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                cellid = decstrtohexstr(cellid, 'u16')
-                cellcfginfo += cellid + '0000'
-                rowcount_i += 1
-                band = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                band = decstrtohexstr(band, 'u16')
-                cellcfginfo += band
-                rowcount_i += 1
-                ulChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                ulChnBw = decstrtohexstr(ulChnBw, 'u32')
-                cellcfginfo += ulChnBw
-                rowcount_i += 1
-                dlChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                dlChnBw = decstrtohexstr(dlChnBw, 'u32')
-                cellcfginfo += dlChnBw
-                rowcount_i += 1
-                ulArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                ulArfcn = decstrtohexstr(ulArfcn, 'u32')
-                cellcfginfo += ulArfcn
-                rowcount_i += 1
-                dlArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
-                dlArfcn = decstrtohexstr(dlArfcn, 'u32')
-                cellcfginfo += dlArfcn
-                rowcount_i += 1
-                cellnum_i += 1
-            dunum_i += 1
-    msglen = (len(cellcfginfo)+64) // 2
-    msglen = msglenfunc(msglen)
-    data = 'aaaa5555' + msgtype + msglen + 24*'00' + cellcfginfo
-    print(data)
-    data_send(data, client_socket, boardip, boardport)
+                cellnum_i = 1
+                while cellnum_i <= cellnumint:
+                    cellidx = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    cellidx = decstrtohexstr(cellidx, 'u8')
+                    cellcfginfo += cellidx
+                    rowcount_i += 1
+                    plmn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    plmn = strtohexasc(plmn) + '0000'
+                    cellcfginfo += plmn
+                    rowcount_i += 1
+                    pci = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    pci = decstrtohexstr(pci, 'u16')
+                    cellcfginfo += pci
+                    rowcount_i += 1
+                    cellid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    cellid = decstrtohexstr(cellid, 'u16')
+                    cellcfginfo += cellid + '0000'
+                    rowcount_i += 1
+                    band = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    band = decstrtohexstr(band, 'u16')
+                    cellcfginfo += band
+                    rowcount_i += 1
+                    ulChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    ulChnBw = decstrtohexstr(ulChnBw, 'u32')
+                    cellcfginfo += ulChnBw
+                    rowcount_i += 1
+                    dlChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    dlChnBw = decstrtohexstr(dlChnBw, 'u32')
+                    cellcfginfo += dlChnBw
+                    rowcount_i += 1
+                    ulArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    ulArfcn = decstrtohexstr(ulArfcn, 'u32')
+                    cellcfginfo += ulArfcn
+                    rowcount_i += 1
+                    dlArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                    dlArfcn = decstrtohexstr(dlArfcn, 'u32')
+                    cellcfginfo += dlArfcn
+                    rowcount_i += 1
+                    cellnum_i += 1
+                dunum_i += 1
+        msglen = (len(cellcfginfo)+64) // 2
+        msglen = msglenfunc(msglen)
+        data = 'aaaa5555' + msgtype + msglen + 24*'00' + cellcfginfo
+        print(data)
+        data_send(data, client_socket, boardip, boardport)
 
 def workmodecfgClicked():
     msgtype = '06f0'
@@ -670,6 +676,18 @@ def workmodecfgClicked():
 
 def workmodedwClicked():
     pass
+
+def emptyerr(rowcount,itemui):
+    rowcount_i = 0
+    while rowcount_i < rowcount:
+        itemstr = itemui.tableWidget.item(rowcount_i,1).text()
+        if itemstr == '':
+            emptyerrwidget.show()
+            return 'empty'
+            break
+        rowcount_i += 1
+    return 'noempty'
+
 
 
 def cellcfgquery():
@@ -764,6 +782,13 @@ def tabadd():
     getattr(win._mainui,groupBox_3).setTitle("查询信息")
     getattr(win._mainui,groupBox_5).setTitle("心跳")
     getattr(win._mainui,groupBox_4).setTitle("操作日志")
+
+
+class logic_emptyerr(QWidget):
+    def  __init__(self):
+        QWidget.__init__(self)
+        self._emptyerrui=Ui_emptyerr()
+        self._emptyerrui.setupUi(self)
 
 class logic_linkdialog(QDialog):
     def __init__(self):
@@ -1097,6 +1122,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    emptyerrwidget=logic_emptyerr()
     cellnumdialog=logic_cellnumdialog()
     linkdialog=logic_linkdialog()
     rebootdialog=logic_rebootdialog()
