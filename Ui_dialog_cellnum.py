@@ -64,6 +64,7 @@ class Ui_Dialog_cellnum(object):
         self.comboBox_cell2num.addItem("")
         self.verticalLayout_2.addWidget(self.comboBox_cell2num)
         self.gridLayout.addLayout(self.verticalLayout_2, 0, 1, 1, 1)
+        self.comboBox_dunum.currentTextChanged.connect(self.selectchange)
 
         self.retranslateUi(Dialog_cellnum)
         QtCore.QMetaObject.connectSlotsByName(Dialog_cellnum)
@@ -85,13 +86,39 @@ class Ui_Dialog_cellnum(object):
         self.comboBox_cell1num.setItemText(5, _translate("Dialog_cellnum", "5"))
         self.comboBox_cell1num.setItemText(6, _translate("Dialog_cellnum", "6"))
         self.comboBox_cell2num.setItemText(0, _translate("Dialog_cellnum", "0"))
-        self.comboBox_cell2num.setItemText(1, _translate("Dialog_cellnum", "1"))
-        self.comboBox_cell2num.setItemText(2, _translate("Dialog_cellnum", "2"))
-        self.comboBox_cell2num.setItemText(3, _translate("Dialog_cellnum", "3"))
-        self.comboBox_cell2num.setItemText(4, _translate("Dialog_cellnum", "4"))
-        self.comboBox_cell2num.setItemText(5, _translate("Dialog_cellnum", "5"))
-        self.comboBox_cell2num.setItemText(6, _translate("Dialog_cellnum", "6"))
 
+    def selectchange(self):
+        _translate = QtCore.QCoreApplication.translate
+        if self.comboBox_dunum.currentText() == '1':
+            self.comboBox_cell1num.setItemText(0, _translate("Dialog_cellnum", "0"))
+            self.comboBox_cell1num.setItemText(1, _translate("Dialog_cellnum", "1"))
+            self.comboBox_cell1num.setItemText(2, _translate("Dialog_cellnum", "2"))
+            self.comboBox_cell1num.setItemText(3, _translate("Dialog_cellnum", "3"))
+            self.comboBox_cell1num.setItemText(4, _translate("Dialog_cellnum", "4"))
+            self.comboBox_cell1num.setItemText(5, _translate("Dialog_cellnum", "5"))
+            self.comboBox_cell1num.setItemText(6, _translate("Dialog_cellnum", "6"))
+            self.comboBox_cell2num.setItemText(0, _translate("Dialog_cellnum", "0"))
+            self.comboBox_cell2num.setItemText(1, _translate("Dialog_cellnum", ""))
+            self.comboBox_cell2num.setItemText(2, _translate("Dialog_cellnum", ""))
+            self.comboBox_cell2num.setItemText(3, _translate("Dialog_cellnum", ""))
+            self.comboBox_cell2num.setItemText(4, _translate("Dialog_cellnum", ""))
+            self.comboBox_cell2num.setItemText(5, _translate("Dialog_cellnum", ""))
+            self.comboBox_cell2num.setItemText(6, _translate("Dialog_cellnum", ""))
+        elif self.comboBox_dunum.currentText() == '2':
+            self.comboBox_cell1num.setItemText(0, _translate("Dialog_cellnum", "0"))
+            self.comboBox_cell1num.setItemText(1, _translate("Dialog_cellnum", "1"))
+            self.comboBox_cell1num.setItemText(2, _translate("Dialog_cellnum", "2"))
+            self.comboBox_cell1num.setItemText(3, _translate("Dialog_cellnum", "3"))
+            self.comboBox_cell1num.setItemText(4, _translate("Dialog_cellnum", "4"))
+            self.comboBox_cell1num.setItemText(5, _translate("Dialog_cellnum", "5"))
+            self.comboBox_cell1num.setItemText(6, _translate("Dialog_cellnum", "6"))
+            self.comboBox_cell2num.setItemText(0, _translate("Dialog_cellnum", "0"))
+            self.comboBox_cell2num.setItemText(1, _translate("Dialog_cellnum", "1"))
+            self.comboBox_cell2num.setItemText(2, _translate("Dialog_cellnum", "2"))
+            self.comboBox_cell2num.setItemText(3, _translate("Dialog_cellnum", "3"))
+            self.comboBox_cell2num.setItemText(4, _translate("Dialog_cellnum", "4"))
+            self.comboBox_cell2num.setItemText(5, _translate("Dialog_cellnum", "5"))
+            self.comboBox_cell2num.setItemText(6, _translate("Dialog_cellnum", "6"))
 
 if __name__ == "__main__":
     import sys

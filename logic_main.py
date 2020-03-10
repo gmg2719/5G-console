@@ -285,11 +285,8 @@ def cellnumClicked():
         while dunum_i<=int(dunum):
             dusn='Du'+str(dunum_i)+'_Sn'
             item = QtWidgets.QTableWidgetItem()
-            print(type(item))
             cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
-            print(type(item))
             item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
-            print(type(item))
             item.setText(_translate("Dialog", dusn))
             item.setFlags(QtCore.Qt.ItemIsEditable)
             rowcount_i+=1
