@@ -94,8 +94,7 @@
     <property name="title">
      <string>小区参数配置</string>
     </property>
-    <addaction name="cellcfgf003"/>
-    <addaction name="workmodef006"/>
+    <addaction name="actionaddcell"/>
    </widget>
    <widget class="QMenu" name="commenquery">
     <property name="title">
@@ -159,6 +158,11 @@
   <action name="workmodequery">
    <property name="text">
     <string>工作模式查询F03D</string>
+   </property>
+  </action>
+  <action name="actionaddcell">
+   <property name="text">
+    <string>小区配置</string>
    </property>
   </action>
  </widget>

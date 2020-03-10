@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project mainwindow_dialog -->
-<!-- Saved: 2020-01-03, 14:20:23 -->
+<!-- Saved: 2020-03-09, 18:45:03 -->
 <!-- Copyright (C) 2020 ,  -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -15,6 +15,7 @@
   <Sources>
     <Source>Ui_IMSI_TreeView.py</Source>
     <Source>Ui_dialog_cellcfg.py</Source>
+    <Source>Ui_dialog_cellnum.py</Source>
     <Source>Ui_dialog_link.py</Source>
     <Source>Ui_dialog_workmode.py</Source>
     <Source>Ui_mainwindow.py</Source>
@@ -25,6 +26,7 @@
   </Sources>
   <Forms>
     <Form>dialog_cellcfg.ui</Form>
+    <Form>dialog_cellnum.ui</Form>
     <Form>dialog_link.ui</Form>
     <Form>dialog_workmode.ui</Form>
     <Form>mainwindow.ui</Form>

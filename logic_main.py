@@ -10,6 +10,7 @@ from Ui_mainwindow import Ui_MainWindow
 from Ui_IMSI_TreeView import ImsiList
 from Ui_dialog_cellcfg import Ui_Dialog_cellcfg
 from Ui_dialog_workmode import Ui_Dialog_workmode
+from Ui_dialog_cellnum import Ui_Dialog_cellnum
 
 import sys
 import threading
@@ -53,6 +54,7 @@ class logic_main(QMainWindow):
 
         
     def initUI(self):
+        self._mainui.actionaddcell.triggered.connect(cellnumdialog.show)
         self._mainui.actionlink.triggered.connect(linkdialog.show)
         self._mainui.actionchongqi.triggered.connect(rebootdialog.show)
         self._mainui.actionIMSI.triggered.connect(imsilistframe.initUI)
@@ -61,14 +63,15 @@ class logic_main(QMainWindow):
         self._mainui.cellstatequery.triggered.connect(cellstatequery)
         self._mainui.pwrquery.triggered.connect(pwrquery)
         self._mainui.workmodequery.triggered.connect(workmodequery)
-        self._mainui.cellcfgf003.triggered.connect(cellcfgdialog.show)
+        #self._mainui.cellcfgf003.triggered.connect(cellcfgdialog.show)
         self._mainui.workmodef006.triggered.connect(workmodedialog.show)
+        cellnumdialog._cellnum.pushButton_cellnum.clicked.connect(cellnumClicked)
         linkdialog._linkui.pushButton_link.clicked.connect(linkClicked)
         linkdialog._linkui.pushButton_dislink.clicked.connect(dislinkClicked)
         rebootdialog._rebootui.pushButton_reboot_ok.clicked.connect(rebootClicked)
         rebootdialog._rebootui.pushButton_reboot_cancel.clicked.connect(rebootdialog.close)
-        cellcfgdialog._cellcfgui.pushButton_cellcfg_ok.clicked.connect(cellcfgClicked)
-        cellcfgdialog._cellcfgui.pushButton_cellcfg_cancel.clicked.connect(cellcfgdialog.close)
+        #cellcfgdialog._cellcfgui.pushButton_cellcfg_ok.clicked.connect(cellcfgClicked)
+        #cellcfgdialog._cellcfgui.pushButton_cellcfg_cancel.clicked.connect(cellcfgdialog.close)
         workmodedialog._workmodeui.pushButton_wl_work_ok.clicked.connect(workmodecfgClicked)
         workmodedialog._workmodeui.pushButton_wl_work_cancel.clicked.connect(workmodedialog.close)
         workmodedialog._workmodeui.pushButton_dw_work_ok.clicked.connect(workmodedwClicked)
@@ -234,6 +237,208 @@ def data_send(datastr,client_socket,boardip,boardport):
         except Exception as ret:
             pass
 
+
+def cellnumClicked():
+    dunum=cellnumdialog._cellnum.comboBox_dunum.currentText()
+    cell1num=cellnumdialog._cellnum.comboBox_cell1num.currentText()
+    cell2num=cellnumdialog._cellnum.comboBox_cell2num.currentText()
+    rowcount= 2+2*int(dunum)+9*int(cell1num)+9*int(cell2num)
+    cellnumdialog.close()
+    #cellcfgdialog=logic_cellcfgdialog()
+    cellcfgdialog._cellcfgui.tableWidget.setRowCount(rowcount)
+    rowcount_i =0
+    _translate = QtCore.QCoreApplication.translate
+    while rowcount_i<rowcount:
+        item = QtWidgets.QTableWidgetItem()
+        cellcfgdialog._cellcfgui.tableWidget.setVerticalHeaderItem(rowcount_i, item)
+        rowcount_i+=1
+        
+    item = QtWidgets.QTableWidgetItem()
+    cellcfgdialog._cellcfgui.tableWidget.setHorizontalHeaderItem(0, item)
+    item = QtWidgets.QTableWidgetItem()
+    cellcfgdialog._cellcfgui.tableWidget.setHorizontalHeaderItem(1, item)
+    item = QtWidgets.QTableWidgetItem()
+    cellcfgdialog._cellcfgui.tableWidget.setHorizontalHeaderItem(2, item)
+    
+    
+ 
+    item = cellcfgdialog._cellcfgui.tableWidget.horizontalHeaderItem(0)
+    item.setText(_translate("Dialog", "对象"))
+    item = cellcfgdialog._cellcfgui.tableWidget.horizontalHeaderItem(1)
+    item.setText(_translate("Dialog", "值"))
+    item = cellcfgdialog._cellcfgui.tableWidget.horizontalHeaderItem(2)
+    item.setText(_translate("Dialog", "注释"))
+        
+    rowcount_i =0
+    ColumnCount_i=0
+
+    while rowcount_i<rowcount:
+        item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+        item.setText(_translate("Dialog", "GnbId"))
+        item.setFlags(QtCore.Qt.ItemIsEditable)
+        rowcount_i+=1
+        item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+        item.setText(_translate("Dialog", "DuNum"))
+        item.setFlags(QtCore.Qt.ItemIsEditable)
+        rowcount_i+=1
+        dunum_i=1
+        while dunum_i<=int(dunum):
+            dusn='Du'+str(dunum_i)+'_Sn'
+            item = QtWidgets.QTableWidgetItem()
+            print(type(item))
+            cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+            print(type(item))
+            item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+            print(type(item))
+            item.setText(_translate("Dialog", dusn))
+            item.setFlags(QtCore.Qt.ItemIsEditable)
+            rowcount_i+=1
+            item = QtWidgets.QTableWidgetItem()
+            cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+            item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+            cellnum='Du'+str(dunum_i)+'_CellNum'
+            item.setText(_translate("Dialog", cellnum))
+            item.setFlags(QtCore.Qt.ItemIsEditable)
+            rowcount_i+=1
+            if dunum_i == 1:
+                cell1num_i=1
+                while cell1num_i<=int(cell1num):
+                    cellidx= 'Du'+str(dunum_i)+'_'+'CellIdx'+str(cell1num_i)
+                    plmn='Du'+str(dunum_i)+'_'+'Plmn'+str(cell1num_i)
+                    pci='Du'+str(dunum_i)+'_'+'Pci'+str(cell1num_i)
+                    cellid='Du'+str(dunum_i)+'_'+'CellId'+str(cell1num_i)
+                    band='Du'+str(dunum_i)+'_'+'Band'+str(cell1num_i)
+                    ulbw='Du'+str(dunum_i)+'_'+'上行带宽'+str(cell1num_i)
+                    dlbw='Du'+str(dunum_i)+'_'+'下行带宽'+str(cell1num_i)
+                    ularfcn='Du'+str(dunum_i)+'_'+'上行频点号'+str(cell1num_i)
+                    dlarfcn='Du'+str(dunum_i)+'_'+'下行频点号'+str(cell1num_i)
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", cellidx))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", plmn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", pci))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", cellid))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", band))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", ulbw))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", dlbw))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", ularfcn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", dlarfcn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    cell1num_i+=1
+                dunum_i+=1
+            elif dunum_i == 2:
+                cell2num_i=1
+                while cell2num_i<=int(cell2num):
+                    cellidx= 'Du'+str(dunum_i)+'_'+'CellIdx'+str(cell2num_i)
+                    plmn='Du'+str(dunum_i)+'_'+'Plmn'+str(cell2num_i)
+                    pci='Du'+str(dunum_i)+'_'+'Pci'+str(cell2num_i)
+                    cellid='Du'+str(dunum_i)+'_'+'CellId'+str(cell2num_i)
+                    band='Du'+str(dunum_i)+'_'+'band'+str(cell2num_i)
+                    ulbw='Du'+str(dunum_i)+'_'+'上行带宽'+str(cell2num_i)
+                    dlbw='Du'+str(dunum_i)+'_'+'下行带宽'+str(cell2num_i)
+                    ularfcn='Du'+str(dunum_i)+'_'+'上行频点号'+str(cell2num_i)
+                    dlarfcn='Du'+str(dunum_i)+'_'+'下行频点号'+str(cell2num_i)
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", cellidx))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", plmn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", pci))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", cellid))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", band))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", ulbw))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", dlbw))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", ularfcn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    item = QtWidgets.QTableWidgetItem()
+                    cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
+                    item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
+                    item.setText(_translate("Dialog", dlarfcn))
+                    item.setFlags(QtCore.Qt.ItemIsEditable)
+                    rowcount_i+=1
+                    cell2num_i+=1
+                dunum_i+=1
+    cellcfgdialog.show()
+    
+    
 
 def linkClicked():
     global socket_flag
@@ -498,6 +703,12 @@ class logic_linkdialog(QDialog):
         QDialog.__init__(self)
         self._linkui=Ui_Dialog()
         self._linkui.setupUi(self)
+
+class logic_cellnumdialog(QDialog):
+    def __init__(self):
+        QDialog.__init__(self)
+        self._cellnum=Ui_Dialog_cellnum()
+        self._cellnum.setupUi(self)
 
 class logic_rebootdialog(QDialog):
     def __init__(self):
@@ -795,6 +1006,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    cellnumdialog=logic_cellnumdialog()
     linkdialog=logic_linkdialog()
     rebootdialog=logic_rebootdialog()
     cellcfgdialog=logic_cellcfgdialog()

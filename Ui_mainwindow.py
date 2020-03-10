@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         self.plainTextEdit_5_tab1 = QtWidgets.QPlainTextEdit(self.groupBox_5_tab1)
         self.plainTextEdit_5_tab1.setObjectName("plainTextEdit_5_tab1")
         self.gridLayout_5_tab1.addWidget(self.plainTextEdit_5_tab1, 0, 0, 1, 1)
-        self.gridLayout_6_tab1.addWidget(self.groupBox_5_tab1, 1, 2, 1, 2)
+        self.gridLayout_6_tab1.addWidget(self.groupBox_5_tab1, 1, 2, 1, 1)
         self.groupBox_3_tab1 = QtWidgets.QGroupBox(self.tab1)
         self.groupBox_3_tab1.setObjectName("groupBox_3_tab1")
         self.gridLayout_3_tab1 = QtWidgets.QGridLayout(self.groupBox_3_tab1)
@@ -47,7 +47,7 @@ class Ui_MainWindow(object):
         self.plainTextEdit_3_tab1 = QtWidgets.QPlainTextEdit(self.groupBox_3_tab1)
         self.plainTextEdit_3_tab1.setObjectName("plainTextEdit_3_tab1")
         self.gridLayout_3_tab1.addWidget(self.plainTextEdit_3_tab1, 0, 0, 1, 1)
-        self.gridLayout_6_tab1.addWidget(self.groupBox_3_tab1, 0, 0, 1, 4)
+        self.gridLayout_6_tab1.addWidget(self.groupBox_3_tab1, 0, 0, 1, 3)
         self.tabWidget.addTab(self.tab1, "")
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
@@ -83,12 +83,13 @@ class Ui_MainWindow(object):
         self.workmodef006.setObjectName("workmodef006")
         self.workmodequery = QtWidgets.QAction(MainWindow)
         self.workmodequery.setObjectName("workmodequery")
+        self.actionaddcell = QtWidgets.QAction(MainWindow)
+        self.actionaddcell.setObjectName("actionaddcell")
         self.menulink_settings.addAction(self.actionlink)
         self.menulink_settings.addAction(self.actionnew_tab)
         self.menulink_settings.addAction(self.actionIMSI)
         self.menu.addAction(self.actionchongqi)
-        self.cellcfgs.addAction(self.cellcfgf003)
-        self.cellcfgs.addAction(self.workmodef006)
+        self.cellcfgs.addAction(self.actionaddcell)
         self.commenquery.addAction(self.cellcfgquery)
         self.commenquery.addAction(self.cellstatequery)
         self.commenquery.addAction(self.pwrquery)
@@ -97,6 +98,10 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menu.menuAction())
         self.menuBar.addAction(self.cellcfgs.menuAction())
         self.menuBar.addAction(self.commenquery.menuAction())
+
+        self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(0)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
         self.tab2 = QtWidgets.QWidget()
         self.gridLayout_6_tab2=QtWidgets.QGridLayout(self.tab2)
@@ -122,10 +127,6 @@ class Ui_MainWindow(object):
         self.gridLayout_4_tab3=QtWidgets.QGridLayout(self.groupBox_4_tab3)
         self.plainTextEdit_4_tab3=QtWidgets.QPlainTextEdit(self.groupBox_4_tab3)
 
-        self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -147,6 +148,7 @@ class Ui_MainWindow(object):
         self.pwrquery.setText(_translate("MainWindow", "衰减及增益查询F031"))
         self.workmodef006.setText(_translate("MainWindow", "工作模式配置F006"))
         self.workmodequery.setText(_translate("MainWindow", "工作模式查询F03D"))
+        self.actionaddcell.setText(_translate("MainWindow", "小区配置"))
 
 
 if __name__ == "__main__":
