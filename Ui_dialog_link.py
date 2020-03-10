@@ -81,7 +81,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "连接设置"))
         self.pushButton_link.setText(_translate("Dialog", "连接"))
         self.pushButton_dislink.setText(_translate("Dialog", "断开"))
         self.label.setText(_translate("Dialog", "主机IP"))
@@ -91,8 +91,8 @@ class Ui_Dialog(object):
         self.lineEdit_port.setText(_translate("Dialog", "3345"))
         self.lineEdit_boardip.setText(_translate("Dialog", "192.168.2.53"))
         self.label_4.setText(_translate("Dialog", "模式"))
-        self.comboBox.setItemText(0, _translate("Dialog", "TCP"))
-        self.comboBox.setItemText(1, _translate("Dialog", "UDP"))
+        self.comboBox.setItemText(1, _translate("Dialog", "TCP"))
+        self.comboBox.setItemText(0, _translate("Dialog", "UDP"))
         self.comboBox_main.setItemText(0, _translate("Dialog", "主控模式"))
         self.comboBox_main.setItemText(1, _translate("Dialog", "非主控模式"))
 

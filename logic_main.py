@@ -28,6 +28,9 @@ boardip_tcpsocket={}
 tcpsocket_addr={}
 #tcpsocket_addr 'addr'for(ip,port)
 tabindex_socket={}
+tabindex_dunum={}
+tabindex_cell1num={}
+tabindex_cell2num={}
 #send data to tabindex
 board_severthtcp={}
 board_severthudp={}
@@ -70,8 +73,8 @@ class logic_main(QMainWindow):
         linkdialog._linkui.pushButton_dislink.clicked.connect(dislinkClicked)
         rebootdialog._rebootui.pushButton_reboot_ok.clicked.connect(rebootClicked)
         rebootdialog._rebootui.pushButton_reboot_cancel.clicked.connect(rebootdialog.close)
-        #cellcfgdialog._cellcfgui.pushButton_cellcfg_ok.clicked.connect(cellcfgClicked)
-        #cellcfgdialog._cellcfgui.pushButton_cellcfg_cancel.clicked.connect(cellcfgdialog.close)
+        cellcfgdialog._cellcfgui.pushButton_cellcfg_ok.clicked.connect(cellcfgClicked)
+        cellcfgdialog._cellcfgui.pushButton_cellcfg_cancel.clicked.connect(cellcfgdialog.close)
         workmodedialog._workmodeui.pushButton_wl_work_ok.clicked.connect(workmodecfgClicked)
         workmodedialog._workmodeui.pushButton_wl_work_cancel.clicked.connect(workmodedialog.close)
         workmodedialog._workmodeui.pushButton_dw_work_ok.clicked.connect(workmodedwClicked)
@@ -171,7 +174,6 @@ def tcp_server_concurrency():
                 else:
                     if recv_msg:
                         msg = recv_msg.hex()
-                        #print(msg)
                         while bufferstr != '' or msg != '':
                             bufferstr=bufferstr+msg
                             msg=''
@@ -242,6 +244,9 @@ def cellnumClicked():
     dunum=cellnumdialog._cellnum.comboBox_dunum.currentText()
     cell1num=cellnumdialog._cellnum.comboBox_cell1num.currentText()
     cell2num=cellnumdialog._cellnum.comboBox_cell2num.currentText()
+    tabindex_dunum[win._mainui.tabWidget.currentIndex()] = dunum
+    tabindex_cell1num[win._mainui.tabWidget.currentIndex()] = cell1num
+    tabindex_cell2num[win._mainui.tabWidget.currentIndex()] = cell2num
     rowcount= 2+2*int(dunum)+9*int(cell1num)+9*int(cell2num)
     cellnumdialog.close()
     #cellcfgdialog=logic_cellcfgdialog()
@@ -280,6 +285,13 @@ def cellnumClicked():
         item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
         item.setText(_translate("Dialog", "DuNum"))
         item.setFlags(QtCore.Qt.ItemIsEditable)
+
+        item = QtWidgets.QTableWidgetItem()
+        cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 1, item)
+        item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1)
+        item.setText(_translate("Dialog", dunum))
+        item.setFlags(QtCore.Qt.ItemIsEditable)
+
         rowcount_i+=1
         dunum_i=1
         while dunum_i<=int(dunum):
@@ -289,13 +301,28 @@ def cellnumClicked():
             item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
             item.setText(_translate("Dialog", dusn))
             item.setFlags(QtCore.Qt.ItemIsEditable)
+
             rowcount_i+=1
+
             item = QtWidgets.QTableWidgetItem()
             cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 0, item)
             item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 0)
             cellnum='Du'+str(dunum_i)+'_CellNum'
             item.setText(_translate("Dialog", cellnum))
             item.setFlags(QtCore.Qt.ItemIsEditable)
+
+            item = QtWidgets.QTableWidgetItem()
+            cellcfgdialog._cellcfgui.tableWidget.setItem(rowcount_i, 1, item)
+            item = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1)
+            if dunum_i ==1:
+                item.setText(_translate("Dialog", cell1num))
+                item.setFlags(QtCore.Qt.ItemIsEditable)
+            elif dunum_i ==2:
+                item.setText(_translate("Dialog", cell2num))
+                item.setFlags(QtCore.Qt.ItemIsEditable)
+
+
+
             rowcount_i+=1
             if dunum_i == 1:
                 cell1num_i=1
@@ -452,9 +479,11 @@ def linkClicked():
     if linkdialog._linkui.comboBox.currentText() == 'TCP':
         socket_flag='TCP'
         linkClicked_TCP(boardip,port)
+        linkdialog.close()
     elif linkdialog._linkui.comboBox.currentText() == 'UDP':
         socket_flag='UDP'
         linkClicked_UDP(pcip, port, boardip)
+        linkdialog.close()
 
 
 def dislinkClicked():
@@ -535,39 +564,80 @@ def rebootClicked():
     data_send(data,client_socket, boardip, boardport)
 
 def cellcfgClicked():
-    msgtype = '03f0'
-    if main_flag == '非主控模式':
-        msgframe = 'ffffffff3132333435363738393031323334353637383900'
-    elif main_flag == '主控模式':
-        msgframe = 'ffffffff'
+    msgtype = '0200'
+    dunum = tabindex_dunum[win._mainui.tabWidget.currentIndex()]
+    cell1num =tabindex_cell1num[win._mainui.tabWidget.currentIndex()]
+    cell2num =tabindex_cell2num[win._mainui.tabWidget.currentIndex()]
     boardport = tabindex_boardport[win._mainui.tabWidget.currentIndex()]
     boardip = tabindex_boardip[win._mainui.tabWidget.currentIndex()]
     client_socket = tabindex_socket[win._mainui.tabWidget.currentIndex()]
-    ulearfcnstr = cellcfgdialog._cellcfgui.tableWidget.item(0, 1).text()
-    dlearfcnstr = cellcfgdialog._cellcfgui.tableWidget.item(1, 1).text()
-    ulearfcn=decstrtohexstr(ulearfcnstr,'u32')
-    dlearfcn=decstrtohexstr(dlearfcnstr,'u32')
-    plmnstr = cellcfgdialog._cellcfgui.tableWidget.item(2, 1).text()
-    plmn = strtohexasc(plmnstr)+'0000'
-    bandwithstr = cellcfgdialog._cellcfgui.combox.currentText()
-    bandwith = str((int(bandwithstr))*5)
-    bandwith = decstrtohexstr(bandwith,'u8')
-    bandstr = cellcfgdialog._cellcfgui.tableWidget.item(4, 1).text()
-    band = decstrtohexstr(bandstr,'u32')
-    pcistr = cellcfgdialog._cellcfgui.tableWidget.item(5, 1).text()
-    pci = decstrtohexstr(pcistr,'u16')
-    tacstr = cellcfgdialog._cellcfgui.tableWidget.item(6, 1).text()
-    tac = decstrtohexstr(tacstr,'u16')
-    cellidstr = cellcfgdialog._cellcfgui.tableWidget.item(7, 1).text()
-    cellid = decstrtohexstr(cellidstr,'u32')
-    uepmaxstr = cellcfgdialog._cellcfgui.tableWidget.item(8, 1).text()
-    uepmax = decstrtohexstr(uepmaxstr,'u16')
-    enbpmaxstr = cellcfgdialog._cellcfgui.tableWidget.item(9, 1).text()
-    enbpmax = decstrtohexstr(enbpmaxstr, 'u16')
-    cellcfginfo = ulearfcn+dlearfcn+plmn+bandwith+band+pci+tac+cellid+uepmax+enbpmax
-    msglen = (len('aaaa5555' + msgtype + msgframe + cellcfginfo)) // 2
+    cellcfginfo = ''
+    rowcount = int(dunum)
+    rowcount_i = 0
+    while rowcount_i < rowcount:
+        gnbid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+        gnbid = decstrtohexstr(gnbid, 'u32')
+        cellcfginfo += gnbid
+        rowcount_i += 1
+        dunumcfg = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+        dunumcfg = decstrtohexstr(dunumcfg, 'u8')
+        cellcfginfo += dunumcfg+'000000'
+        rowcount_i += 1
+        dunum_i = 1
+        while dunum_i <= int(dunum):
+            dusn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+            dusn = strtohexasc(dusn) + '00000000'
+            cellcfginfo += dusn
+            rowcount_i += 1
+            cellnum = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+            cellnumint = int(cellnum)
+            cellnum = decstrtohexstr(cellnum, 'u8')
+            cellcfginfo += cellnum
+            rowcount_i += 1
+            cellnum_i = 1
+            while cellnum_i <= cellnumint:
+                cellidx = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                cellidx = decstrtohexstr(cellidx, 'u8')
+                cellcfginfo += cellidx
+                rowcount_i += 1
+                plmn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                plmn = strtohexasc(plmn) + '0000'
+                cellcfginfo += plmn
+                rowcount_i += 1
+                pci = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                pci = decstrtohexstr(pci, 'u16')
+                cellcfginfo += pci
+                rowcount_i += 1
+                cellid = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                cellid = decstrtohexstr(cellid, 'u16')
+                cellcfginfo += cellid + '0000'
+                rowcount_i += 1
+                band = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                band = decstrtohexstr(band, 'u16')
+                cellcfginfo += band
+                rowcount_i += 1
+                ulChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                ulChnBw = decstrtohexstr(ulChnBw, 'u32')
+                cellcfginfo += ulChnBw
+                rowcount_i += 1
+                dlChnBw = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                dlChnBw = decstrtohexstr(dlChnBw, 'u32')
+                cellcfginfo += dlChnBw
+                rowcount_i += 1
+                ulArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                ulArfcn = decstrtohexstr(ulArfcn, 'u32')
+                cellcfginfo += ulArfcn
+                rowcount_i += 1
+                dlArfcn = cellcfgdialog._cellcfgui.tableWidget.item(rowcount_i, 1).text()
+                dlArfcn = decstrtohexstr(dlArfcn, 'u32')
+                cellcfginfo += dlArfcn
+                rowcount_i += 1
+                cellnum_i += 1
+            dunum_i += 1
+    msglen = (len(cellcfginfo)+64) // 2
     msglen = msglenfunc(msglen)
-    data = 'aaaa5555' + msgtype + msglen + msgframe + cellcfginfo
+    data = 'aaaa5555' + msgtype + msglen + 24*'00' + cellcfginfo
+    print(data)
     data_send(data, client_socket, boardip, boardport)
 
 def workmodecfgClicked():
@@ -761,9 +831,8 @@ def analyze(data, ip):
             showmsg='DuNum：'+str(duNum)
             win.signal_write_msg.emit(showmsg, board_ip)
             duNum_i = 1
-            print(duNum_i)
             while duNum_i <=duNum:
-                showmsg=' No. '+str(duNum_i)+' DU: '
+                showmsg=' No.'+str(duNum_i)+' DU: '
                 win.signal_write_msg.emit(showmsg, board_ip)
                 msgvalue = msgvalue[pos:]
                 duSn = msgvalue[0:40]
@@ -781,7 +850,7 @@ def analyze(data, ip):
                 win.signal_write_msg.emit(showmsg, board_ip)
                 cellNum_i =1
                 while cellNum_i<= cellNum:
-                    showmsg='  No. '+str(cellNum_i)+' Cell: '
+                    showmsg='  No.'+str(cellNum_i)+' Cell: '
                     win.signal_write_msg.emit(showmsg, board_ip)
                     msgvalue=msgvalue[pos:]
                     cellId=getU16int(msgvalue)
@@ -799,25 +868,50 @@ def analyze(data, ip):
                     cellNum_i +=1
                 duNum_i  +=1
                 
-    elif msgtype == 'f005':
-        UeIdType=getU32int(msgvalue)
-        pos=8
-        msgvalue=msgvalue[pos:]
-        imsi=msgvalue[0:30]
-        imsi=strhexASCtostr(imsi)
-        pos=34
-        msgvalue=msgvalue[pos:]
-        imei=msgvalue[0:30]
-        imei=strhexASCtostr(imei)
-        pos=34
-        msgvalue=msgvalue[pos:]
-        rssi=getU8int(msgvalue)
-        strList=[localtime, imsi, str(rssi), board_ip]
-        try:
-            imsilistframe.imsilistshow(strList,imsinumber)
-            imsinumber+=1
-        except Exception as ret:
-            pass
+    elif msgtype == '0003':
+        gnbId = getU32int(msgvalue)
+        pos = 8
+        msgvalue = msgvalue[pos:]
+        dunum = getU8int(msgvalue)
+        pos = 8
+        showmsg = 'Receive小区配置应答 ' + localtime + ' HeartBeat' + ' GnbId：' + str(gnbId) +'\n' +' DuNum ' + str(dunum)
+        win.signal_query_msg.emit(showmsg, board_ip)
+        duNum_i = 1
+        while duNum_i <= dunum:
+            showmsg = ' No.' + str(duNum_i) + ' DU: '
+            win.signal_query_msg.emit(showmsg, board_ip)
+            msgvalue = msgvalue[pos:]
+            duSn = msgvalue[0:40]
+            duSn = strhexASCtostr(duSn)
+            pos = 40
+            showmsg = '  DuSn：' + str(duSn)
+            win.signal_query_msg.emit(showmsg, board_ip)
+            msgvalue = msgvalue[pos:]
+            cellNum = getU8int(msgvalue)
+            pos = 8
+            showmsg = '  CellNum：' + str(cellNum)
+            win.signal_query_msg.emit(showmsg, board_ip)
+            cellNum_i = 1
+            while cellNum_i <= cellNum:
+                showmsg = '  No.' + str(cellNum_i) + ' Cell: '
+                win.signal_query_msg.emit(showmsg, board_ip)
+                msgvalue = msgvalue[pos:]
+                cellId = getU16int(msgvalue)
+                pos = 4
+                msgvalue = msgvalue[pos:]
+                print(msgvalue,'sss')
+                errcode = getU8int(msgvalue)
+                pos = 2
+                errcodelist = ['成功', '参数错误', 'FFS']
+                errcodestr = errcodelist[errcode]
+                msgvalue = msgvalue[pos:]
+                cellIdx = getU8int(msgvalue)
+                pos = 2
+                showmsg = '  cellId：' + str(cellId) + ' 配置结果: ' + str(errcodestr) + ' cellIdx: ' + str(cellIdx)
+                win.signal_query_msg.emit(showmsg, board_ip)
+                cellNum_i += 1
+            duNum_i += 1
+
     elif msgtype in ['f00c','f004','f007']:
         cfgresult=getU32int(msgvalue)
         cfgresultstr=''
